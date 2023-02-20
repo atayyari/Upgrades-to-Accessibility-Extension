@@ -1,7 +1,7 @@
 console.log("Background running...");
 
 //Acts when context menu entry is clicked
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+browser.contextMenus.onClicked.addListener((info, tab) => {
 	var text = info.selectionText;
 
 	if(info.parentMenuItemId === "imagecont" || info.parentMenuItemId === "imagebright") {
@@ -9,11 +9,11 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 			type: "image_request",
 			txt: info.menuItemId
 		}
-		chrome.tabs.sendMessage(tab.id, msg)
+		browser.tabs.sendMessage(tab.id, msg)
 	}
 
 	else {
-		chrome.storage.local.get({
+		browser.storage.local.get({
 			"readingSpeed_setting" : 1.0,
 			"dialect" : "en-us"
 		}, function(items) {
@@ -23,24 +23,24 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 			console.log("Reading speed:");
 			console.log(readingSpeed);
 
-			chrome.tts.speak(text, {"rate" : readingSpeed, "voiceName" : "Google US English"});
+			browser.tts.speak(text, {"rate" : readingSpeed, "voiceName" : "Google US English"});
 		});
 	}
 	
 });
 
 //Listens for tab load
-chrome.tabs.onUpdated.addListener( function (tabId, changeInfo, tab) {
+browser.tabs.onUpdated.addListener( function (tabId, changeInfo, tab) {
 	if (changeInfo.status == 'complete') {
 		let msg = {
 			type: "onLoad_request",
 			txt: ""
 		}
 
-		chrome.tabs.sendMessage(tab.id, msg)
+		browser.tabs.sendMessage(tab.id, msg)
 	}
 
-	chrome.tts.getVoices(
+	browser.tts.getVoices(
 		function(voices) {
 		  for (var i = 0; i < voices.length; i++) {
 			console.log('Voice ' + i + ':');
@@ -55,7 +55,7 @@ chrome.tabs.onUpdated.addListener( function (tabId, changeInfo, tab) {
   })
 
 //Acts when extension icon is clicked
-chrome.browserAction.onClicked.addListener(IconClicked);
+browser.browserAction.onClicked.addListener(IconClicked);
 
 //Sends message to activate content.js
 function IconClicked(tab)
@@ -64,6 +64,6 @@ function IconClicked(tab)
 		type: "onClick_request",
 		txt: ""
 	}
-	chrome.tabs.sendMessage(tab.id,msg);
+	browser.tabs.sendMessage(tab.id,msg);
 }
 
